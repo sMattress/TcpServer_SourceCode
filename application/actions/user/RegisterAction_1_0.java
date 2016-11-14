@@ -1,4 +1,4 @@
-package application.actions;
+package application.actions.user;
 
 import application.model.AppMsg;
 import com.alibaba.fastjson.JSONObject;

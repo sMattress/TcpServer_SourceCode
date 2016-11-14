@@ -1,4 +1,4 @@
-package application.actions;
+package application.actions.debug;
 
 import application.model.AppMsg;
 import io.netty.channel.Channel;
@@ -10,10 +10,11 @@ import wtf.socket.registry.items.WTFSocketRegistryDebugItem;
 
 import java.util.List;
 
-public class DebugRemoveFilterAction_1_0 implements WTFSocketAPIsAction {
+public class DebugAddFilterAction_1_0 implements WTFSocketAPIsAction {
 
     @Override
     public void doAction(Channel ctx, WTFSocketProtocol protocol, List<WTFSocketProtocol> responses) {
+
         WTFSocketRegistryDebugItem debugItem = (WTFSocketRegistryDebugItem) WTFSocketRegistry.get(protocol.getFrom());
 
         AppMsg msg = protocol.getBody(AppMsg.class);
@@ -27,7 +28,7 @@ public class DebugRemoveFilterAction_1_0 implements WTFSocketAPIsAction {
 
         for (int i = 0 ; i < msg.getParams().size(); i++) {
             String name = msg.getParams().getString(i);
-            debugItem.removeFilterGrep(name);
+            debugItem.addFilterGrep(name);
         }
 
         WTFSocketProtocol_2_0 response = WTFSocketProtocol_2_0.makeResponse(protocol);

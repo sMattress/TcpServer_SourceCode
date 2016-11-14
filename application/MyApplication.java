@@ -1,6 +1,9 @@
 package application;
 
-import application.actions.*;
+import application.actions.debug.*;
+import application.actions.sys.CheckoutTimeAction_1_0;
+import application.actions.user.RegisterAction_1_0;
+import application.actions.user.UnregisterAction_1_0;
 import wtf.apis.WTFSocketAPIsManager;
 import wtf.apis.WTFSocketAPIsTrigger;
 import application.model.AppMsg;
