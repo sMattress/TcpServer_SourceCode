@@ -1,1 +1,5 @@
-# Remote-Ctrl-Server
+# Tcp服务器代码
+
+- Tcp监听端口：**1234**
+- WebSocket监听端口：**4321**
+
