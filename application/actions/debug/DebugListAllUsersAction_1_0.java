@@ -16,7 +16,6 @@ import java.util.List;
 
 public class DebugListAllUsersAction_1_0 implements WTFSocketAPIsAction {
 
-    @Override
     public void doAction(Channel ctx, WTFSocketProtocol protocol, List<WTFSocketProtocol> responses) {
 
         WTFSocketProtocol_2_0 response = WTFSocketProtocol_2_0.makeResponse(protocol);

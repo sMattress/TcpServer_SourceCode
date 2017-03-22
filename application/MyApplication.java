@@ -4,10 +4,12 @@ import application.actions.debug.*;
 import application.actions.sys.CheckoutTimeAction_1_0;
 import application.actions.user.RegisterAction_1_0;
 import application.actions.user.UnregisterAction_1_0;
+import okhttp3.*;
 import wtf.apis.WTFSocketAPIsManager;
 import wtf.apis.WTFSocketAPIsTrigger;
 import application.model.AppMsg;
 
+import wtf.socket.Listener.WTFSocketHeartbeatBreakListener;
 import wtf.socket.main.WTFSocketConfig;
 import wtf.socket.main.WTFSocketServer;
 
@@ -17,6 +19,9 @@ import wtf.socket.protocols.templates.WTFSocketProtocol_2_0;
 
 import wtf.socket.protocols.parser.WTFSocketProtocolParser;
 import wtf.socket.registry.WTFSocketRegistry;
+import wtf.socket.registry.items.WTFSocketRegistryItem;
+
+import java.io.IOException;
 
 
 public class MyApplication {
@@ -25,6 +30,25 @@ public class MyApplication {
 
         initProtocolParser();
         initApplication();
+
+        WTFSocketServer.addHeartbeatBreakListener(
+                new WTFSocketHeartbeatBreakListener() {
+                    public void heartbeatBreak(WTFSocketRegistryItem item) {
+                        String url = "http://smartmattress.lesmarthome.com/v1/hardware/disconnect?name=" + item.getName();
+                        OkHttpClient client = new OkHttpClient();
+                        Request request = new Request.Builder().url(url).build();
+
+                        client.newCall(request).enqueue(new Callback() {
+                            public void onFailure(Call call, IOException e) {
+                                System.out.println(e.getMessage());
+                            }
+
+                            public void onResponse(Call call, Response response) throws IOException {
+                                System.out.println(response.body().string());
+                            }
+                        });
+                    }
+                });
 
         WTFSocketServer.run(
                 new WTFSocketConfig()

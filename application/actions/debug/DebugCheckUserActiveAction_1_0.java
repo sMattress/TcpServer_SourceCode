@@ -12,7 +12,7 @@ import wtf.socket.registry.items.WTFSocketRegistryUserItem;
 import java.util.List;
 
 public class DebugCheckUserActiveAction_1_0 implements WTFSocketAPIsAction {
-    @Override
+
     public void doAction(Channel ctx, WTFSocketProtocol protocol, List<WTFSocketProtocol> responses) {
 
         AppMsg msg = protocol.getBody(AppMsg.class);

@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-Class-Path: ./libs/netty-all-4.1.6.Final.jar ./libs/fastjson-1.2.9.jar
-  ./libs/commons-lang-2.6.jar ./libs/wtf.socket.server-1.0.3.jar
+Class-Path: commons-lang-2.6.jar fastjson-1.2.9.jar netty-all-4.1.6.Final.jar wtf.socket.server-1.0.0.jar okio-1.11.0.jar okhttp-3.6.0.jar
 Main-Class: application.MyApplication
 

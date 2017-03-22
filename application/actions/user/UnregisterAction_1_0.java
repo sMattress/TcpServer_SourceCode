@@ -14,7 +14,7 @@ import java.util.List;
  * 注销功能
  */
 public class UnregisterAction_1_0 implements WTFSocketAPIsAction {
-    @Override
+
     public void doAction(Channel ctx, WTFSocketProtocol protocol, List<WTFSocketProtocol> responses) {
 
         WTFSocketRegistry.unRegister(protocol.getFrom());

@@ -11,7 +11,7 @@ import wtf.socket.registry.items.WTFSocketRegistryDebugItem;
 import java.util.List;
 
 public class DebugOpenShowHeartbeatAction_1_0 implements WTFSocketAPIsAction {
-    @Override
+
     public void doAction(Channel ctx, WTFSocketProtocol protocol, List<WTFSocketProtocol> responses) {
 
         WTFSocketRegistryDebugItem debugItem = (WTFSocketRegistryDebugItem) WTFSocketRegistry.get(protocol.getFrom());
