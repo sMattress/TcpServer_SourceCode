@@ -3,12 +3,12 @@ package application.actions.user;
 import application.model.AppMsg;
 import com.alibaba.fastjson.JSONObject;
 import okhttp3.*;
+import org.apache.commons.lang.StringUtils;
 import wtf.apis.WTFSocketAPIsAction;
-import wtf.socket.protocols.templates.WTFSocketProtocol;
-import wtf.socket.protocols.templates.WTFSocketProtocol_2_0;
-import wtf.socket.registry.WTFSocketRegistry;
+import wtf.socket.protocol.WTFSocketMsg;
 
-import io.netty.channel.Channel;
+import wtf.socket.routing.WTFSocketRoutingMap;
+import wtf.socket.routing.item.WTFSocketRoutingItem;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,32 +18,41 @@ import java.util.List;
  */
 public class RegisterAction_1_0 implements WTFSocketAPIsAction {
 
-    public void doAction(Channel ctx, WTFSocketProtocol protocol, List<WTFSocketProtocol> responses) {
+    public void doAction(WTFSocketMsg msg, List<WTFSocketMsg> responses) {
 
-        String deviceType = "Unknown";
+        final AppMsg body = msg.getBody(AppMsg.class);
+        final WTFSocketRoutingItem item = WTFSocketRoutingMap.TMP.getItem(msg.getIoTag());
 
-        AppMsg body = protocol.getBody(AppMsg.class);
-
-        if (body.getParams() != null ) {
-            JSONObject param = body.getParams().getJSONObject(0);
-            if (param.containsKey("deviceType")) {
-                deviceType = param.getString("deviceType");
-            }
+        if (item == null) {
+            final WTFSocketMsg response = msg.makeResponse();
+            response.setBody(new AppMsg().setFlag(1));
+            responses.add(response);
+            return;
         }
 
-        WTFSocketRegistry.register(
-                protocol.getFrom(),
-                ctx,
-                protocol.getConnectType(),
-                protocol.getVersion(),
-                deviceType
-        );
+        item.setAddress(msg.getFrom());
+        item.setAccept(msg.getVersion());
 
-        WTFSocketProtocol_2_0 response = WTFSocketProtocol_2_0.makeResponse(protocol);
+        if (body.getParams() != null) {
+            final JSONObject param = body.getParams().getJSONObject(0);
+            final String itemType = param.getString("deviceType");
+            item.setType(itemType);
+        }
+
+        if (StringUtils.startsWith(msg.getFrom(), "Debug_")) {
+            WTFSocketRoutingMap.TMP.shift(item, WTFSocketRoutingMap.DEBUG);
+        }else {
+            WTFSocketRoutingMap.TMP.shift(item, WTFSocketRoutingMap.FORMAL);
+            notifyWeb(msg);
+        }
+
+        final WTFSocketMsg response = msg.makeResponse();
         response.setBody(new AppMsg().setFlag(1));
-
         responses.add(response);
-        String url = "http://smartmattress.lesmarthome.com/v1/hardware/connect?name=" + protocol.getFrom();
+    }
+
+    private void notifyWeb(WTFSocketMsg msg) {
+        String url = "http://smartmattress.lesmarthome.com/v1/hardware/connect?name=" + msg.getFrom();
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(url).build();
 

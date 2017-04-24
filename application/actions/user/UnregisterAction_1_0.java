@@ -2,11 +2,10 @@ package application.actions.user;
 
 import application.model.AppMsg;
 import wtf.apis.WTFSocketAPIsAction;
-import wtf.socket.protocols.templates.WTFSocketProtocol;
-import wtf.socket.protocols.templates.WTFSocketProtocol_2_0;
-import wtf.socket.registry.WTFSocketRegistry;
 
-import io.netty.channel.Channel;
+import wtf.socket.protocol.WTFSocketMsg;
+import wtf.socket.routing.WTFSocketRoutingMap;
+import wtf.socket.routing.item.WTFSocketRoutingItem;
 
 import java.util.List;
 
@@ -15,10 +14,12 @@ import java.util.List;
  */
 public class UnregisterAction_1_0 implements WTFSocketAPIsAction {
 
-    public void doAction(Channel ctx, WTFSocketProtocol protocol, List<WTFSocketProtocol> responses) {
+    public void doAction(WTFSocketMsg msg, List<WTFSocketMsg> responses) {
 
-        WTFSocketRegistry.unRegister(protocol.getFrom());
-        WTFSocketProtocol_2_0 response = WTFSocketProtocol_2_0.makeResponse(protocol);
+        final WTFSocketRoutingItem item = WTFSocketRoutingMap.FORMAL.getItem(msg.getFrom());
+        WTFSocketRoutingMap.FORMAL.unRegister(item);
+
+        final WTFSocketMsg response = msg.makeResponse();
         response.setBody(new AppMsg().setFlag(1));
         responses.add(response);
     }

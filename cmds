@@ -1,0 +1,8 @@
+- debug_add_filter
+{"from":"Debug_ZFly","to":"server","msgType":1,"msgId":1,"state":1,"version":"2.0","body":{"cmd":128,"params":["*"]}}\r\n
+- debug_check_the_user
+{"from":"Debug_ZFly","to":"server","msgType":1,"msgId":1,"state":1,"version":"2.0","body":{"cmd":130,"params":["*"]}}\r\n
+- debug_list_all_user
+{"from":"Debug_ZFly","to":"server","msgType":1,"msgId":1,"state":1,"version":"2.0","body":{"cmd": 131,"params":[{"connectType": "*","protocolType": "*","deviceType": "*"}]}}\r\n
+- debug_register
+{"from":"Debug_ZFly","to":"server","msgType":1,"msgId":1,"state":1,"version":"2.0","body":{"cmd":64}}\r\n
