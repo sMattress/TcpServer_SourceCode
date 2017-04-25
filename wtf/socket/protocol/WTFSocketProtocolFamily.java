@@ -13,12 +13,12 @@ import java.util.List;
  *
  * Created by zfly on 2017/4/21.
  */
-public abstract class WTFSocketProtocolFamily {
+public class WTFSocketProtocolFamily {
 
     /**
      * 解析器列表
      */
-    private static List<WTFSocketParser> parsers = new ArrayList<WTFSocketParser>() {{
+    private List<WTFSocketParser> parsers = new ArrayList<WTFSocketParser>() {{
         add(new WTFSocketDefaultParser());
     }};
 
@@ -30,7 +30,7 @@ public abstract class WTFSocketProtocolFamily {
      * @throws WTFSocketMsgFormatWrongException 消息格式错误
      * @throws WTFSocketUnsupportedProtocolException 没有适合的解析器
      */
-    public static WTFSocketMsg parseMsgFromString(String data) throws WTFSocketMsgFormatWrongException, WTFSocketUnsupportedProtocolException {
+    public WTFSocketMsg parseMsgFromString(String data) throws WTFSocketMsgFormatWrongException, WTFSocketUnsupportedProtocolException {
         for (WTFSocketParser parser : parsers) {
             if (parser.isResponse(data)) {
                 return parser.parseMsgFromString(data);
@@ -45,7 +45,7 @@ public abstract class WTFSocketProtocolFamily {
      * @param msg 消息对象
      * @return 字符串数据
      */
-    public static String packageMsgToString(WTFSocketMsg msg) {
+    public String packageMsgToString(WTFSocketMsg msg) {
         for (WTFSocketParser parser : parsers) {
             if (parser.isResponse(msg)) {
                 return parser.packageMsgToString(msg);
@@ -59,7 +59,7 @@ public abstract class WTFSocketProtocolFamily {
      *
      * @param parser 要解析器对象
      */
-    public static void registerParser(WTFSocketParser parser) {
+    public void registerParser(WTFSocketParser parser) {
         parsers.add(parser);
     }
 
@@ -68,14 +68,14 @@ public abstract class WTFSocketProtocolFamily {
      *
      * @param parser 要解析器对象
      */
-    public static void unregisterParser(WTFSocketParser parser) {
+    public void unregisterParser(WTFSocketParser parser) {
         parsers.remove(parser);
     }
 
     /**
      * 清空所以解析器
      */
-    public static void clearParsers() {
+    public void clearParsers() {
         parsers.clear();
     }
 

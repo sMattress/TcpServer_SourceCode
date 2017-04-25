@@ -1,5 +1,6 @@
 package wtf.socket.routing;
 
+import wtf.socket.WTFSocket;
 import wtf.socket.routing.item.WTFSocketRoutingTmpItem;
 
 import java.util.concurrent.Executors;
@@ -16,12 +17,11 @@ public class WTFSocketCleaner {
 
     public static void runExpire() {
         executor.scheduleAtFixedRate(
-                () -> WTFSocketRoutingMap.TMP.mapValues().stream()
+                () -> WTFSocket.ROUTING.getTmpMap().values().stream()
                         .filter(item -> ((WTFSocketRoutingTmpItem) item).isExpires())
                         .forEach(item -> {
                             item.getTerm().close();
-                            WTFSocketRoutingMap.TMP.unRegister(item);
-                            System.out.println("< " + item.getAddress() + " > expires");
+                            WTFSocket.ROUTING.getTmpMap().unRegister(item);
                         }),
                 1, 1, TimeUnit.MINUTES);
     }

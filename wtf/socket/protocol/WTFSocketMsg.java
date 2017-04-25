@@ -46,7 +46,7 @@ public interface WTFSocketMsg {
 
     <T> T getBody(Class<T> tClass);
 
-    void setBody(JSONObject body);
+//    void setBody(JSONObject body);
 
     void setBody(Object body);
 

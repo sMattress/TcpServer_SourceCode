@@ -1,4 +1,4 @@
-package wtf.socket.security;
+package wtf.socket.security.strategy;
 
 import org.apache.commons.lang.StringUtils;
 import wtf.socket.WTFSocket;

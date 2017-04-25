@@ -1,4 +1,4 @@
-package wtf.socket.security;
+package wtf.socket.security.strategy;
 
 import wtf.socket.protocol.WTFSocketMsg;
 

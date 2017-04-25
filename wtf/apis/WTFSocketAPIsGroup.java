@@ -13,13 +13,9 @@ public class WTFSocketAPIsGroup {
     private ConcurrentLinkedQueue<WTFSocketAPIsTrigger> apIsTriggers = new ConcurrentLinkedQueue<>();
     private WTFSocketAPIsGroup dependence = null;
 
-    public WTFSocketAPIsGroup addAction(WTFSocketAPIsTrigger apIsTrigger, Class<? extends WTFSocketAPIsAction> actionClass) {
-        try {
-            apIsTrigger.setAction(actionClass.newInstance());
-            apIsTriggers.add(apIsTrigger);
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
+    public WTFSocketAPIsGroup addAction(WTFSocketAPIsTrigger apIsTrigger, WTFSocketAPIsAction action) {
+        apIsTrigger.setAction(action);
+        apIsTriggers.add(apIsTrigger);
         return this;
     }
 

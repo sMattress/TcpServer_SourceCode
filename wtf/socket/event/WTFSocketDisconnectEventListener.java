@@ -8,6 +8,6 @@ import wtf.socket.routing.item.WTFSocketRoutingItem;
  * Created by zfly on 2017/4/24.
  */
 @FunctionalInterface
-public interface WTFSocketDisconnectListener {
+public interface WTFSocketDisconnectEventListener {
     void invoke(WTFSocketRoutingItem item);
 }

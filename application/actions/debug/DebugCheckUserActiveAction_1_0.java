@@ -3,8 +3,8 @@ package application.actions.debug;
 import application.model.AppMsg;
 import com.alibaba.fastjson.JSONObject;
 import wtf.apis.WTFSocketAPIsAction;
+import wtf.socket.WTFSocket;
 import wtf.socket.protocol.WTFSocketMsg;
-import wtf.socket.routing.WTFSocketRoutingMap;
 import wtf.socket.routing.item.WTFSocketRoutingFormalItem;
 
 import java.util.List;
@@ -20,8 +20,8 @@ public class DebugCheckUserActiveAction_1_0 implements WTFSocketAPIsAction {
             String name = body.getParams().getString(i);
             JSONObject param = new JSONObject();
             param.put("name", name);
-            if (WTFSocketRoutingMap.FORMAL.contains(name)) {
-                final WTFSocketRoutingFormalItem user = (WTFSocketRoutingFormalItem) WTFSocketRoutingMap.FORMAL.getItem(name);
+            if (WTFSocket.ROUTING.getFormalMap().contains(name)) {
+                final WTFSocketRoutingFormalItem user = (WTFSocketRoutingFormalItem) WTFSocket.ROUTING.getFormalMap().getItem(name);
 
                 param.put("state",  "online");
                 param.put("connect", user.getTerm().getConnectType());

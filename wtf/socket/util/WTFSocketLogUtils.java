@@ -1,8 +1,8 @@
 package wtf.socket.util;
 
 import org.apache.commons.lang.StringUtils;
+import wtf.socket.WTFSocket;
 import wtf.socket.protocol.WTFSocketMsg;
-import wtf.socket.routing.WTFSocketRoutingMap;
 import wtf.socket.routing.item.WTFSocketRoutingDebugItem;
 
 import java.text.DateFormat;
@@ -52,7 +52,7 @@ public class WTFSocketLogUtils {
     }
 
     private static void debugOutput(String msg) {
-        WTFSocketRoutingMap.DEBUG.mapValues().stream()
+        WTFSocket.ROUTING.getDebugMap().values().stream()
                 .filter(item -> ((WTFSocketRoutingDebugItem) item).isFilter(msg))
                 .forEach(item -> {
                     final DateFormat format = new SimpleDateFormat("hh:mm:ss:SSS");

@@ -1,7 +1,7 @@
 package wtf.socket.routing;
 
+import org.apache.commons.lang.StringUtils;
 import wtf.socket.io.term.WTFSocketTerm;
-import wtf.socket.io.term.impl.WTFSocketDefaultTerm;
 import wtf.socket.routing.item.WTFSocketRoutingDebugItem;
 import wtf.socket.routing.item.WTFSocketRoutingFormalItem;
 import wtf.socket.routing.item.WTFSocketRoutingItem;
@@ -15,33 +15,15 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * Created by zfly on 2017/4/22.
  */
-public enum WTFSocketRouting {
+public class WTFSocketRoutingMap {
 
-    /**
-     * 临时终端表
-     * 记录连接上服务器但没有完成注册的终端
-     */
-    TMP(),
-    /**
-     * 调试终端表
-     * 记录拥有调试权限的终端
-     */
-    DEBUG(),
-    /**
-     * 正式终端表
-     * 记录拥有普通权限的终端
-     */
-    FORMAL() {{
-        register(new WTFSocketRoutingFormalItem(new WTFSocketDefaultTerm()) {{
-            // 默认添加 server 对象
-            // server 对象代表服务器，不可被覆盖
-            setCover(false);
-            setAddress("server");
-        }});
-    }};
+    private final String name;
+    private ConcurrentHashMap<String, WTFSocketRoutingItem> firstKeys = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, String> secondKeys = new ConcurrentHashMap<>();
 
-    private ConcurrentHashMap<String, WTFSocketRoutingItem> firstKey = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<String, String> secondKey = new ConcurrentHashMap<>();
+    WTFSocketRoutingMap(String name) {
+        this.name = name;
+    }
 
     /**
      * 向路由表中注册对象
@@ -51,7 +33,7 @@ public enum WTFSocketRouting {
      * @param term 连接终端
      */
     public void register(WTFSocketTerm term) {
-        if (this == TMP) {
+        if (StringUtils.equals(name, "TMP")) {
             register(new WTFSocketRoutingTmpItem(term));
         }
     }
@@ -70,22 +52,22 @@ public enum WTFSocketRouting {
         final String second = item.getAddress();
 
         // 重复注册
-        if (second != null && secondKey.containsKey(second)) {
+        if (second != null && secondKeys.containsKey(second)) {
             // 关闭原连接
-            final String repeatKey = secondKey.get(second);
-            final WTFSocketRoutingItem repeatItem = firstKey.get(repeatKey);
+            final String repeatKey = secondKeys.get(second);
+            final WTFSocketRoutingItem repeatItem = firstKeys.get(repeatKey);
 
             if (repeatItem.isCover()) {
                 repeatItem.getTerm().close();
-                firstKey.remove(repeatKey);
-                secondKey.put(second, first);
-                firstKey.put(first, item);
+                firstKeys.remove(repeatKey);
+                secondKeys.put(second, first);
+                firstKeys.put(first, item);
             }
         }else {
             if (second != null) {
-                secondKey.put(second, first);
+                secondKeys.put(second, first);
             }
-            firstKey.put(first, item);
+            firstKeys.put(first, item);
         }
     }
 
@@ -97,13 +79,13 @@ public enum WTFSocketRouting {
     public void unRegister(WTFSocketRoutingItem item) {
 
         final String first = item.getTerm().getIoTag();
-        final String second = this == TMP ? null : item.getAddress();
+        final String second = StringUtils.equals(name, "TMP") ? null : item.getAddress();
 
-        if (firstKey.containsKey(first)) {
-            firstKey.remove(first);
+        if (firstKeys.containsKey(first)) {
+            firstKeys.remove(first);
         }
-        if (second != null && secondKey.containsKey(second)) {
-            secondKey.remove(second);
+        if (second != null && secondKeys.containsKey(second)) {
+            secondKeys.remove(second);
         }
     }
 
@@ -114,7 +96,7 @@ public enum WTFSocketRouting {
      * @return 是否包含对象
      */
     public boolean contains(String key) {
-        return firstKey.containsKey(key) || secondKey.containsKey(key);
+        return firstKeys.containsKey(key) || secondKeys.containsKey(key);
     }
 
     /**
@@ -124,9 +106,9 @@ public enum WTFSocketRouting {
      * @return 路由表对象
      */
     public WTFSocketRoutingItem getItem(String key) {
-        WTFSocketRoutingItem item = firstKey.get(key);
-        if (item == null && secondKey.containsKey(key)) {
-            item = firstKey.get(secondKey.get(key));
+        WTFSocketRoutingItem item = firstKeys.get(key);
+        if (item == null && secondKeys.containsKey(key)) {
+            item = firstKeys.get(secondKeys.get(key));
         }
         return item;
     }
@@ -138,15 +120,15 @@ public enum WTFSocketRouting {
      * @param item 路由表对象
      * @param dst 目的路由表
      */
-    public void shift(WTFSocketRoutingItem item, WTFSocketRouting dst) {
-        if (this != TMP) {
+    public void shift(WTFSocketRoutingItem item, WTFSocketRoutingMap dst) {
+        if (!StringUtils.equals(name, "TMP")) {
             return;
         }
-        if (dst == FORMAL) {
+        if (StringUtils.equals(dst.name, "FORMAL")) {
             dst.register(new WTFSocketRoutingFormalItem(item));
         }
         unRegister(item);
-        if (dst == DEBUG) {
+        if (StringUtils.equals(dst.name, "DEBUG")) {
             dst.register(new WTFSocketRoutingDebugItem(item));
         }
     }
@@ -156,7 +138,16 @@ public enum WTFSocketRouting {
      *
      * @return 表中的所有对象
      */
-    public Collection<WTFSocketRoutingItem> mapValues() {
-        return firstKey.values();
+    public Collection<WTFSocketRoutingItem> values() {
+        return firstKeys.values();
+    }
+
+    /**
+     * 获取路由表名字
+     *
+     * @return 路由表名字
+     */
+    public String name() {
+        return name;
     }
 }

@@ -96,14 +96,9 @@ public class WTFSocketDefaultMsg implements WTFSocketMsg {
     }
 
     @Override
-    public void setBody(JSONObject body) {
-        this.body = body;
-    }
-
-    @Override
     @JSONField(serialize = false)
     public void setBody(Object body) {
-        setBody((JSONObject) JSON.toJSON(body));
+        this.body = ((JSONObject) JSON.toJSON(body));
     }
 
     @Override

@@ -5,9 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import okhttp3.*;
 import org.apache.commons.lang.StringUtils;
 import wtf.apis.WTFSocketAPIsAction;
+import wtf.socket.WTFSocket;
 import wtf.socket.protocol.WTFSocketMsg;
 
-import wtf.socket.routing.WTFSocketRoutingMap;
 import wtf.socket.routing.item.WTFSocketRoutingItem;
 
 import java.io.IOException;
@@ -21,7 +21,7 @@ public class RegisterAction_1_0 implements WTFSocketAPIsAction {
     public void doAction(WTFSocketMsg msg, List<WTFSocketMsg> responses) {
 
         final AppMsg body = msg.getBody(AppMsg.class);
-        final WTFSocketRoutingItem item = WTFSocketRoutingMap.TMP.getItem(msg.getIoTag());
+        final WTFSocketRoutingItem item = WTFSocket.ROUTING.getTmpMap().getItem(msg.getIoTag());
 
         if (item == null) {
             final WTFSocketMsg response = msg.makeResponse();
@@ -37,12 +37,15 @@ public class RegisterAction_1_0 implements WTFSocketAPIsAction {
             final JSONObject param = body.getParams().getJSONObject(0);
             final String itemType = param.getString("deviceType");
             item.setType(itemType);
+        }else {
+            item.setType("Unknown");
         }
 
+
         if (StringUtils.startsWith(msg.getFrom(), "Debug_")) {
-            WTFSocketRoutingMap.TMP.shift(item, WTFSocketRoutingMap.DEBUG);
+            WTFSocket.ROUTING.getTmpMap().shift(item, WTFSocket.ROUTING.getDebugMap());
         }else {
-            WTFSocketRoutingMap.TMP.shift(item, WTFSocketRoutingMap.FORMAL);
+            WTFSocket.ROUTING.getTmpMap().shift(item, WTFSocket.ROUTING.getFormalMap());
             notifyWeb(msg);
         }
 
@@ -62,7 +65,7 @@ public class RegisterAction_1_0 implements WTFSocketAPIsAction {
             }
 
             public void onResponse(Call call, Response response) throws IOException {
-                System.out.println(response.body().string());
+                System.out.println("notify connect => " + response.body().string());
             }
         });
     }

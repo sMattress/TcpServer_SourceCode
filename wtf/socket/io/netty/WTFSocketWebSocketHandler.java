@@ -9,11 +9,11 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.websocketx.*;
 import io.netty.util.CharsetUtil;
+import wtf.socket.WTFSocket;
 import wtf.socket.exception.WTFSocketFatalException;
 import wtf.socket.io.term.impl.WTFSocketDefaultTerm;
 import wtf.socket.schedule.WTFSocketScheduler;
 import wtf.socket.protocol.WTFSocketConnectType;
-import wtf.socket.routing.WTFSocketRoutingMap;
 import wtf.socket.routing.item.WTFSocketRoutingItem;
 
 import java.util.Arrays;
@@ -32,7 +32,7 @@ public class WTFSocketWebSocketHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        WTFSocketRoutingMap.TMP.register(
+        WTFSocket.ROUTING.getTmpMap().register(
                 new WTFSocketDefaultTerm() {{
                     setChannel(ctx.channel());
                     setConnectType(WTFSocketConnectType.TCP);
@@ -42,12 +42,12 @@ public class WTFSocketWebSocketHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        Arrays.stream(WTFSocketRoutingMap.values())
+        Arrays.stream(WTFSocket.ROUTING.values())
                 .filter(map -> map.contains(ctx.channel().id().asShortText()))
                 .forEach(map -> {
                     final WTFSocketRoutingItem item = map.getItem(ctx.channel().id().asShortText());
                     map.unRegister(item);
-                    WTFSocketScheduler.getDisconnectListener().invoke(item);
+                    WTFSocket.EVENTS_GROUP.getDisconnectEventListener().invoke(item);
                 });
     }
 
@@ -108,7 +108,7 @@ public class WTFSocketWebSocketHandler extends ChannelInboundHandlerAdapter {
         }
         final String data = ((TextWebSocketFrame) frame).text();
         try {
-            WTFSocketScheduler.submit(data, ctx.channel().id().asShortText(), WTFSocketConnectType.WebSocket);
+            WTFSocket.SCHEDULER.submit(data, ctx.channel().id().asShortText(), WTFSocketConnectType.WebSocket);
         } catch (WTFSocketFatalException e) {
             ctx.writeAndFlush(new TextWebSocketFrame((e.getMessage())));
         }

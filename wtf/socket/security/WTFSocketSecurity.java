@@ -1,64 +1,42 @@
 package wtf.socket.security;
 
-import org.apache.commons.lang.StringUtils;
-import wtf.socket.exception.WTFSocketInvalidSourceException;
-import wtf.socket.exception.WTFSocketInvalidTargetException;
-import wtf.socket.exception.WTFSocketPermissionDeniedException;
-import wtf.socket.inter.delegate.WTFSocketAuthDelegate;
-import wtf.socket.protocol.WTFSocketMsg;
-import wtf.socket.routing.WTFSocketRoutingMap;
-import wtf.socket.routing.item.WTFSocketRoutingFormalItem;
+import wtf.socket.security.strategy.WTFSocketCheckFromStrategy;
+import wtf.socket.security.strategy.WTFSocketCheckToStrategy;
+import wtf.socket.security.strategy.WTFSocketSendPermissionStrategy;
 
 /**
  *
  * Created by zfly on 2017/4/24.
  */
-public abstract class WTFSocketSecurity {
+public class WTFSocketSecurity {
 
-    private static WTFSocketAuthDelegate authDelegate = (from, to) -> true;
+    private WTFSocketSendPermissionStrategy sendPermissionStrategy = msg -> true;
 
+    private WTFSocketCheckFromStrategy checkFromStrategy = msg -> false;
 
-    public static WTFSocketAuthDelegate getAuthDelegate() {
-        return authDelegate;
+    private WTFSocketCheckToStrategy checkToStrategy = msg -> false;
+
+    public WTFSocketSendPermissionStrategy getSendPermissionStrategy() {
+        return sendPermissionStrategy;
     }
 
-    public static void setAuthDelegate(WTFSocketAuthDelegate authDelegate) {
-        WTFSocketSecurity.authDelegate = authDelegate;
+    public void setSendPermissionStrategy(WTFSocketSendPermissionStrategy sendPermissionStrategy) {
+        this.sendPermissionStrategy = sendPermissionStrategy;
     }
 
-    /**
-     * 移除授权代理
-     */
-    public static void removeAuthDelegate() {
-        authDelegate = ((from, to) -> true);
+    public WTFSocketCheckFromStrategy getCheckFromStrategy() {
+        return checkFromStrategy;
     }
 
-    public static void check(WTFSocketMsg msg) throws WTFSocketInvalidSourceException, WTFSocketInvalidTargetException, WTFSocketPermissionDeniedException {
-        final String toAddress = msg.getTo();
-        final String fromAddress = msg.getFrom();
-        final String fromIoTag = msg.getIoTag();
+    public void setCheckFromStrategy(WTFSocketCheckFromStrategy checkFromStrategy) {
+        this.checkFromStrategy = checkFromStrategy;
+    }
 
-        // 无效源地址
-        if (!WTFSocketRoutingMap.FORMAL.contains(fromAddress))
-            throw new WTFSocketInvalidSourceException(toAddress);
+    public WTFSocketCheckToStrategy getCheckToStrategy() {
+        return checkToStrategy;
+    }
 
-        final WTFSocketRoutingFormalItem source = (WTFSocketRoutingFormalItem) WTFSocketRoutingMap.FORMAL.getItem(fromAddress);
-
-        // 源地址与ioTag不匹配
-        if (!StringUtils.equals(source.getTerm().getIoTag(), fromIoTag))
-            throw new WTFSocketInvalidSourceException(fromAddress);
-
-        // 无效目标地址
-        if (!WTFSocketRoutingMap.FORMAL.contains(toAddress))
-            throw (WTFSocketInvalidTargetException) new WTFSocketInvalidTargetException(toAddress).setOriginalMsg(msg);
-
-        // 权限校验
-        if (!StringUtils.equals(fromAddress, "server") && !source.isAuthTarget(fromAddress)) {
-            if (authDelegate.invoke(fromAddress, toAddress)) {
-                source.addAuthTarget(toAddress);
-            } else {
-                throw (WTFSocketPermissionDeniedException) new WTFSocketPermissionDeniedException(toAddress).setOriginalMsg(msg);
-            }
-        }
+    public void setCheckToStrategy(WTFSocketCheckToStrategy checkToStrategy) {
+        this.checkToStrategy = checkToStrategy;
     }
 }

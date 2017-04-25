@@ -4,9 +4,9 @@ import application.model.AppMsg;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import wtf.apis.WTFSocketAPIsAction;
+import wtf.socket.WTFSocket;
 import wtf.socket.protocol.WTFSocketMsg;
 import wtf.socket.routing.item.WTFSocketRoutingFormalItem;
-import wtf.socket.routing.WTFSocketRoutingMap;
 import wtf.socket.routing.item.WTFSocketRoutingItem;
 
 import java.util.List;
@@ -34,7 +34,7 @@ public class DebugListAllUsersAction_1_0 implements WTFSocketAPIsAction {
             deviceTypeFilter = param.getString("deviceType");
         }
 
-        for (WTFSocketRoutingItem item : WTFSocketRoutingMap.FORMAL.mapValues()) {
+        for (WTFSocketRoutingItem item : WTFSocket.ROUTING.getFormalMap().values()) {
 
             WTFSocketRoutingFormalItem user = (WTFSocketRoutingFormalItem) item;
 
