@@ -1,4 +1,4 @@
-package wtf.socket.inter.listener;
+package wtf.socket.event;
 
 import wtf.socket.routing.item.WTFSocketRoutingItem;
 

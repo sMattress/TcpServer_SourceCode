@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * Created by zfly on 2017/4/22.
  */
-public enum  WTFSocketRoutingMap {
+public enum WTFSocketRouting {
 
     /**
      * 临时终端表
@@ -138,7 +138,7 @@ public enum  WTFSocketRoutingMap {
      * @param item 路由表对象
      * @param dst 目的路由表
      */
-    public void shift(WTFSocketRoutingItem item, WTFSocketRoutingMap dst) {
+    public void shift(WTFSocketRoutingItem item, WTFSocketRouting dst) {
         if (this != TMP) {
             return;
         }
