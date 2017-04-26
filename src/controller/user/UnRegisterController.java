@@ -1,6 +1,6 @@
-package application.controller.user;
+package controller.user;
 
-import application.model.ApplicationMsg;
+import model.ApplicationMsg;
 import org.springframework.stereotype.Controller;
 import wtf.socket.controller.WTFSocketController;
 

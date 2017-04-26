@@ -1,6 +1,6 @@
-package application.controller.sys;
+package controller.sys;
 
-import application.model.ApplicationMsg;
+import model.ApplicationMsg;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Controller;
 import wtf.socket.controller.WTFSocketController;

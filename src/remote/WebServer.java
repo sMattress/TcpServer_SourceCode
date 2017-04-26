@@ -1,8 +1,11 @@
-package application.remote;
+package remote;
 
-import application.model.ApplicationMsg;
 import com.alibaba.fastjson.JSON;
-import com.squareup.okhttp.*;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+import model.ApplicationMsg;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;

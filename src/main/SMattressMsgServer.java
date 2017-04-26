@@ -1,7 +1,7 @@
-package application.main;
+package main;
 
-import application.parser.UserDefinedRegisterProtocolParser;
-import application.remote.WebServer;
+import parser.UserDefinedRegisterProtocolParser;
+import remote.WebServer;
 import wtf.socket.WTFSocket;
 import wtf.socket.event.WTFSocketEventsType;
 import wtf.socket.schedule.WTFSocketConfig;

@@ -1,6 +1,6 @@
-package application.controller.debug;
+package controller.debug;
 
-import application.model.ApplicationMsg;
+import model.ApplicationMsg;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;

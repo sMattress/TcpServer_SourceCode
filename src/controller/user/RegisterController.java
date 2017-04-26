@@ -1,7 +1,7 @@
-package application.controller.user;
+package controller.user;
 
-import application.model.ApplicationMsg;
-import application.remote.WebServer;
+import model.ApplicationMsg;
+import remote.WebServer;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;

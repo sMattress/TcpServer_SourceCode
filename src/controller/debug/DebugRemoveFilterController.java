@@ -1,6 +1,6 @@
-package application.controller.debug;
+package controller.debug;
 
-import application.model.ApplicationMsg;
+import model.ApplicationMsg;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import wtf.socket.controller.WTFSocketController;
@@ -11,14 +11,14 @@ import wtf.socket.routing.item.WTFSocketRoutingDebugItem;
 import java.util.List;
 
 @Controller
-public class DebugAddFilterController implements WTFSocketController {
+public class DebugRemoveFilterController implements WTFSocketController {
 
     @Override
     public boolean isResponse(WTFSocketMsg msg) {
         ApplicationMsg body = msg.getBody(ApplicationMsg.class);
         return StringUtils.startsWith(msg.getFrom(), "Debug_") &&
                 body.getCmd() != null &&
-                body.getCmd() == 128;
+                body.getCmd() == 129;
     }
 
     public void work(WTFSocketMsg msg, List<WTFSocketMsg> responses) {
@@ -28,7 +28,7 @@ public class DebugAddFilterController implements WTFSocketController {
 
         for (int i = 0 ; i < body.getParams().size(); i++) {
             String name = body.getParams().getString(i);
-            item.addFilterGrep(name);
+            item.removeFilterGrep(name);
         }
 
         WTFSocketMsg response = msg.makeResponse();
