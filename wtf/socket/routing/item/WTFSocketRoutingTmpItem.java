@@ -43,4 +43,9 @@ public class WTFSocketRoutingTmpItem extends WTFSocketRoutingItem {
         WTFSocket.ROUTING.TMP_MAP.remove(this);
         WTFSocket.ROUTING.DEBUG_MAP.add(new WTFSocketRoutingDebugItem(this));
     }
+
+    public void logout() {
+        super.logout();
+        WTFSocket.ROUTING.TMP_MAP.remove(this);
+    }
 }

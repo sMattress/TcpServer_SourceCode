@@ -1,5 +1,7 @@
 package wtf.socket.routing.item;
 
+import wtf.socket.WTFSocket;
+import wtf.socket.event.WTFSocketEventsType;
 import wtf.socket.io.WTFSocketIOTerm;
 
 /**
@@ -79,5 +81,10 @@ public abstract class WTFSocketRoutingItem{
 
     public void setCover(boolean cover) {
         this.cover = cover;
+    }
+
+    public void logout() {
+        WTFSocket.EVENTS_GROUP.notifyEventsListener(this, null, WTFSocketEventsType.Disconnect);
+        getTerm().close();
     }
 }

@@ -1,5 +1,6 @@
 package wtf.socket.routing.item;
 
+import wtf.socket.WTFSocket;
 import wtf.socket.io.WTFSocketIOTerm;
 
 import java.util.HashSet;
@@ -34,6 +35,11 @@ public class WTFSocketRoutingFormalItem extends WTFSocketRoutingItem {
             }};
         }
         authTargetsAddress.add(targetAddress);
+    }
+
+    public void logout() {
+        super.logout();
+        WTFSocket.ROUTING.FORMAL_MAP.remove(this);
     }
 
     public void removeAuthTarget(String targetAddress) {

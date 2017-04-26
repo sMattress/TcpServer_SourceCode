@@ -26,7 +26,8 @@ public class UnRegisterController implements WTFSocketController {
     public void work(WTFSocketMsg msg, List<WTFSocketMsg> responses) {
 
         final WTFSocketRoutingFormalItem item = WTFSocket.ROUTING.FORMAL_MAP.getItem(msg.getFrom());
-        WTFSocket.ROUTING.FORMAL_MAP.remove(item);
+        if (item != null)
+            item.logout();
 
         final WTFSocketMsg response = msg.makeResponse();
         response.setBody(new ApplicationMsg().setFlag(1));

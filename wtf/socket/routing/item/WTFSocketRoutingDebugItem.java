@@ -1,5 +1,6 @@
 package wtf.socket.routing.item;
 
+import wtf.socket.WTFSocket;
 import wtf.socket.io.WTFSocketIOTerm;
 
 import java.util.ArrayList;
@@ -47,6 +48,11 @@ public class WTFSocketRoutingDebugItem extends WTFSocketRoutingItem{
             flag = flag || msg.contains("<" + grep + ">");
         }
         return flag;
+    }
+
+    public void logout() {
+        super.logout();
+        WTFSocket.ROUTING.DEBUG_MAP.remove(this);
     }
 
     public void clearFilterGreps() {

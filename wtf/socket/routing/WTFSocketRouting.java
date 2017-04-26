@@ -47,9 +47,7 @@ public class WTFSocketRouting {
         Arrays.stream(values())
                 .filter(map -> map.contains(term.getIoTag()))
                 .forEach(map -> {
-                    final WTFSocketRoutingItem item = map.getItem(term.getIoTag());
-                    map.remove(item);
-                    WTFSocket.EVENTS_GROUP.notifyEventsListener(item, null, WTFSocketEventsType.Disconnect);
+                    map.getItem(term.getIoTag()).logout();
                 });
     }
 
