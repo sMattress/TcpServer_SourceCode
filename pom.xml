@@ -24,6 +24,13 @@
                     <include>spring.xml</include>
                 </includes>
             </resource>
+            <resource>
+                <directory>src/META-INF</directory>
+                <includes>
+                    <include>MANIFEST.MF</include>
+                </includes>
+                <targetPath>META-INF</targetPath>
+            </resource>
         </resources>
     </build>
 

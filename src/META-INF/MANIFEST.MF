@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Class-Path: libs/wtfsocket-server-1.0.0.jar libs/fastjson-1.2.31.jar l
+ ibs/spring-expression-4.1.4.RELEASE.jar libs/commons-logging-1.2.jar 
+ libs/log4j-1.2.17.jar libs/spring-aop-4.1.4.RELEASE.jar libs/netty-al
+ l-4.1.9.Final.jar libs/aopalliance-1.0.jar libs/spring-core-4.1.4.REL
+ EASE.jar libs/okio-1.6.0.jar libs/spring-beans-4.1.4.RELEASE.jar libs
+ /okhttp-2.7.5.jar libs/commons-lang-2.6.jar libs/spring-context-4.1.4
+ .RELEASE.jar
+Main-Class: main.SMattressMsgServer
+
