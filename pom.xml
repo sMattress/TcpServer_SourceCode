@@ -51,7 +51,17 @@
             <artifactId>commons-lang</artifactId>
             <version>2.6</version>
         </dependency>
+        <dependency>
+            <groupId>ZFly</groupId>
+            <artifactId>wtfsocket-server</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 
-
+    <repositories>
+        <repository>
+            <id>ZFly</id>
+            <url>https://raw.githubusercontent.com/ZhangFly/WTFSocket_Server_JAVA/security/lib</url>
+        </repository>
+    </repositories>
 </project>
