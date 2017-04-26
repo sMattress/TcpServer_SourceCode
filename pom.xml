@@ -54,7 +54,7 @@
 
     <repositories>
         <repository>
-            <id>ZFly</id>
+            <id>ZFly-repo</id>
             <url>https://raw.githubusercontent.com/ZhangFly/mvn-repo/master</url>
         </repository>
     </repositories>
