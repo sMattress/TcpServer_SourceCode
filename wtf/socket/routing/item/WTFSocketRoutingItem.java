@@ -1,6 +1,6 @@
 package wtf.socket.routing.item;
 
-import wtf.socket.io.term.WTFSocketTerm;
+import wtf.socket.io.WTFSocketIOTerm;
 
 /**
  * 路由表对象
@@ -17,7 +17,7 @@ public abstract class WTFSocketRoutingItem{
     /**
      * 终端对象
      */
-    private WTFSocketTerm term;
+    private WTFSocketIOTerm term;
     /**
      * 接受的协议类型
      */
@@ -31,8 +31,7 @@ public abstract class WTFSocketRoutingItem{
      */
     private boolean cover = true;
 
-
-    public WTFSocketRoutingItem(WTFSocketTerm term) {
+    public WTFSocketRoutingItem(WTFSocketIOTerm term) {
         this.term = term;
     }
 
@@ -70,7 +69,7 @@ public abstract class WTFSocketRoutingItem{
         this.type = type;
     }
 
-    public WTFSocketTerm getTerm() {
+    public WTFSocketIOTerm getTerm() {
         return term;
     }
 

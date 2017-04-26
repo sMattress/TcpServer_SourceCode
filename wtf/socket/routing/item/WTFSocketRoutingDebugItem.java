@@ -1,6 +1,6 @@
 package wtf.socket.routing.item;
 
-import wtf.socket.io.term.WTFSocketTerm;
+import wtf.socket.io.WTFSocketIOTerm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +16,8 @@ public class WTFSocketRoutingDebugItem extends WTFSocketRoutingItem{
      * 拦截器规则
      */
     private List<String> filterGreps;
-    /**
-     * 是否显示心跳包
-     */
-    private boolean isShowHeartbeatMsg = false;
 
-    public WTFSocketRoutingDebugItem(WTFSocketTerm term) {
+    public WTFSocketRoutingDebugItem(WTFSocketIOTerm term) {
         super(term);
     }
 
@@ -55,13 +51,5 @@ public class WTFSocketRoutingDebugItem extends WTFSocketRoutingItem{
 
     public void clearFilterGreps() {
         filterGreps = null;
-    }
-
-    public boolean isShowHeartbeatMsg() {
-        return isShowHeartbeatMsg;
-    }
-
-    public void setShowHeartbeatMsg(boolean showHeartbeatMsg) {
-        isShowHeartbeatMsg = showHeartbeatMsg;
     }
 }

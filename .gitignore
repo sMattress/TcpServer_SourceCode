@@ -1,3 +1,4 @@
 target/*
 .idea/*
+logs/*
 TcpServer_SourceCode.iml
