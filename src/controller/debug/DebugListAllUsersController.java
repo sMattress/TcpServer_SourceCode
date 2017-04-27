@@ -1,7 +1,7 @@
 package controller.debug;
 
-import model.ApplicationMsg;
 import com.alibaba.fastjson.JSONObject;
+import model.ApplicationMsg;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import wtf.socket.controller.WTFSocketController;
@@ -17,17 +17,17 @@ public class DebugListAllUsersController implements WTFSocketController {
 
     @Override
     public boolean isResponse(WTFSocketMsg msg) {
-        ApplicationMsg body = msg.getBody(ApplicationMsg.class);
+        final ApplicationMsg body = msg.getBody(ApplicationMsg.class);
         return StringUtils.startsWith(msg.getFrom(), "Debug_") &&
                 body.getCmd() != null &&
                 body.getCmd() == 131;
     }
 
-    public void work(WTFSocketMsg msg, List<WTFSocketMsg> responses) {
+    public void work(WTFSocketRoutingItem item, WTFSocketMsg msg, List<WTFSocketMsg> responses) {
 
-        WTFSocketMsg response = msg.makeResponse();
-        ApplicationMsg body = msg.getBody(ApplicationMsg.class);
-        ApplicationMsg responseBody = new ApplicationMsg().setFlag(1);
+        final WTFSocketMsg response = msg.makeResponse();
+        final ApplicationMsg body = msg.getBody(ApplicationMsg.class);
+        final ApplicationMsg responseBody = new ApplicationMsg().setFlag(1);
 
         String connectTypeFilter = null;
         String protocolTypeFilter = null;
@@ -44,9 +44,9 @@ public class DebugListAllUsersController implements WTFSocketController {
             deviceTypeFilter = param.getString("deviceType");
         }
 
-        for (WTFSocketRoutingItem item : WTFSocket.ROUTING.FORMAL_MAP.values()) {
+        for (WTFSocketRoutingItem formalItem : WTFSocket.ROUTING.FORMAL_MAP.values()) {
 
-            WTFSocketRoutingFormalItem user = (WTFSocketRoutingFormalItem) item;
+            WTFSocketRoutingFormalItem user = (WTFSocketRoutingFormalItem) formalItem;
 
             boolean isFilter = true;
 
@@ -55,7 +55,7 @@ public class DebugListAllUsersController implements WTFSocketController {
                     boolean typeThough = false;
                     String[] types = connectTypeFilter.split(",");
                     for (String type : types) {
-                        typeThough = typeThough || StringUtils.equals(type, item.getTerm().getConnectType().toString());
+                        typeThough = typeThough || StringUtils.equals(type, formalItem.getTerm().getConnectType().toString());
                     }
                     isFilter = typeThough;
                 }

@@ -1,13 +1,14 @@
 package controller.debug;
 
-import model.ApplicationMsg;
 import com.alibaba.fastjson.JSONObject;
+import model.ApplicationMsg;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import wtf.socket.controller.WTFSocketController;
 import wtf.socket.WTFSocket;
 import wtf.socket.protocol.WTFSocketMsg;
 import wtf.socket.routing.item.WTFSocketRoutingFormalItem;
+import wtf.socket.routing.item.WTFSocketRoutingItem;
 
 import java.util.List;
 
@@ -16,13 +17,13 @@ public class DebugCheckUserController implements WTFSocketController {
 
     @Override
     public boolean isResponse(WTFSocketMsg msg) {
-        ApplicationMsg body = msg.getBody(ApplicationMsg.class);
+        final ApplicationMsg body = msg.getBody(ApplicationMsg.class);
         return StringUtils.startsWith(msg.getFrom(), "Debug_") &&
                 body.getCmd() != null &&
                 body.getCmd() == 130;
     }
 
-    public void work(WTFSocketMsg msg, List<WTFSocketMsg> responses) {
+    public void work(WTFSocketRoutingItem item, WTFSocketMsg msg, List<WTFSocketMsg> responses) {
 
         final ApplicationMsg body = msg.getBody(ApplicationMsg.class);
         final WTFSocketMsg response = msg.makeResponse();

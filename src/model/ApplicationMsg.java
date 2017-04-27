@@ -1,6 +1,8 @@
 package model;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.annotation.JSONField;
 
 public class ApplicationMsg {
 
@@ -13,6 +15,10 @@ public class ApplicationMsg {
 
     public static ApplicationMsg failure(int errCode, String cause) {
         return new ApplicationMsg().setFlag(0).setErrCode(errCode).setCause(cause);
+    }
+
+    public static ApplicationMsg success() {
+        return new ApplicationMsg().setFlag(1);
     }
 
     public Integer getFlag() {
@@ -75,5 +81,15 @@ public class ApplicationMsg {
     public ApplicationMsg setCause(String cause) {
         this.cause = cause;
         return this;
+    }
+
+    @JSONField(serialize = false)
+    public boolean hasParams() {
+        return params != null && !params.isEmpty();
+    }
+
+    @JSONField(serialize = false)
+    public JSONObject firstParam() {
+        return params.getJSONObject(0);
     }
 }

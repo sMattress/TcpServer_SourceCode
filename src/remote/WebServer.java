@@ -64,16 +64,16 @@ public enum  WebServer {
     }
 
     public boolean hasSendPermission(String from, String to) {
-        final String SERVICE_FORMAT = SERVER_URL + "/v1/sys/work?from=%s&to=%S";
+        final String SERVICE_FORMAT = SERVER_URL + "/v1/sys/auth?from=%s&to=%S";
         final String url = String.format(SERVICE_FORMAT, from, to);
         try {
             final Request request = new Request.Builder().url(url).build();
             final Response response = client.newCall(request).execute();
             final String data = response.body().string();
-            final ApplicationMsg body = JSON.parseObject(data, ApplicationMsg.class);
             System.out.println("hasSendPermission => " + data);
+            final ApplicationMsg body = JSON.parseObject(data, ApplicationMsg.class);
             return body.getFlag() == 1;
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }

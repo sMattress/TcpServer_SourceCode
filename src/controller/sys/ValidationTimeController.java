@@ -1,10 +1,11 @@
 package controller.sys;
 
-import model.ApplicationMsg;
 import com.alibaba.fastjson.JSONObject;
+import model.ApplicationMsg;
 import org.springframework.stereotype.Controller;
 import wtf.socket.controller.WTFSocketController;
 import wtf.socket.protocol.WTFSocketMsg;
+import wtf.socket.routing.item.WTFSocketRoutingItem;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -16,12 +17,12 @@ public class ValidationTimeController implements WTFSocketController {
 
     @Override
     public boolean isResponse(WTFSocketMsg msg) {
-        ApplicationMsg body = msg.getBody(ApplicationMsg.class);
+        final ApplicationMsg body = msg.getBody(ApplicationMsg.class);
         return body.getCmd() != null &&
                 body.getCmd() == 66;
     }
 
-    public void work(WTFSocketMsg msg, List<WTFSocketMsg> responses) {
+    public void work(WTFSocketRoutingItem item, WTFSocketMsg msg, List<WTFSocketMsg> responses) {
 
         final DateFormat df = new SimpleDateFormat("HH-mm-ss");
         final String time[] = df.format(new Date()).split("-");
