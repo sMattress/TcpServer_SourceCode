@@ -5,6 +5,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import remote.WebServer;
 import wtf.socket.controller.WTFSocketController;
+import wtf.socket.exception.WTFSocketException;
+import wtf.socket.exception.fatal.WTFSocketInvalidSourceException;
 import wtf.socket.protocol.WTFSocketMsg;
 import wtf.socket.routing.item.WTFSocketRoutingItem;
 import wtf.socket.routing.item.WTFSocketRoutingTmpItem;
@@ -25,15 +27,12 @@ public class RegisterController implements WTFSocketController {
                 body.getCmd() == 64;
     }
 
-    public void work(WTFSocketRoutingItem item, WTFSocketMsg msg, List<WTFSocketMsg> responses) {
+    public void work(WTFSocketRoutingItem item, WTFSocketMsg msg, List<WTFSocketMsg> responses) throws WTFSocketException{
 
         final ApplicationMsg body = msg.getBody(ApplicationMsg.class);
 
         if (!(item instanceof WTFSocketRoutingTmpItem)) {
-            final WTFSocketMsg response = msg.makeResponse();
-            response.setBody(ApplicationMsg.failure(128, "Had registered <" + item.getAddress() + ">"));
-            responses.add(response);
-            return;
+            throw new WTFSocketInvalidSourceException(msg.getFrom());
         }
 
         item.setAddress(msg.getFrom());
