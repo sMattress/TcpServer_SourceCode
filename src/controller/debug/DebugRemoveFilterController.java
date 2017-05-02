@@ -21,7 +21,7 @@ public class DebugRemoveFilterController implements WTFSocketController {
                 body.getCmd() == 129;
     }
 
-    public void work(WTFSocketRoutingItem item, WTFSocketMsg msg, List<WTFSocketMsg> responses) {
+    public boolean work(WTFSocketRoutingItem item, WTFSocketMsg msg, List<WTFSocketMsg> responses) {
 
         final ApplicationMsg body = msg.getBody(ApplicationMsg.class);
 
@@ -33,5 +33,7 @@ public class DebugRemoveFilterController implements WTFSocketController {
         WTFSocketMsg response = msg.makeResponse();
         response.setBody(new ApplicationMsg().setFlag(1));
         responses.add(response);
+
+        return true;
     }
 }

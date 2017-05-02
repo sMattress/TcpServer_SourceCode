@@ -5,7 +5,6 @@ import model.ApplicationMsg;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import wtf.socket.controller.WTFSocketController;
-import wtf.socket.WTFSocket;
 import wtf.socket.protocol.WTFSocketMsg;
 import wtf.socket.routing.item.WTFSocketRoutingFormalItem;
 import wtf.socket.routing.item.WTFSocketRoutingItem;
@@ -23,7 +22,7 @@ public class DebugCheckUserController implements WTFSocketController {
                 body.getCmd() == 130;
     }
 
-    public void work(WTFSocketRoutingItem item, WTFSocketMsg msg, List<WTFSocketMsg> responses) {
+    public boolean work(WTFSocketRoutingItem item, WTFSocketMsg msg, List<WTFSocketMsg> responses) {
 
         final ApplicationMsg body = msg.getBody(ApplicationMsg.class);
         final WTFSocketMsg response = msg.makeResponse();
@@ -32,13 +31,13 @@ public class DebugCheckUserController implements WTFSocketController {
             String name = body.getParams().getString(i);
             JSONObject param = new JSONObject();
             param.put("name", name);
-            if (WTFSocket.ROUTING.FORMAL_MAP.contains(name)) {
-                final WTFSocketRoutingFormalItem user = WTFSocket.ROUTING.FORMAL_MAP.getItem(name);
+            if (item.getContext().getRouting().getFormalMap().contains(name)) {
+                final WTFSocketRoutingFormalItem user = item.getContext().getRouting().getFormalMap().getItem(name);
 
                 param.put("state",  "online");
                 param.put("connect", user.getTerm().getConnectType());
                 param.put("protocol", user.getAccept());
-                param.put("deviceType", user.getType());
+                param.put("deviceType", user.getDeviceType());
             }else {
                 param.put("state",  "offline");
             }
@@ -48,5 +47,7 @@ public class DebugCheckUserController implements WTFSocketController {
 
         response.setBody(body);
         responses.add(response);
+
+        return true;
     }
 }

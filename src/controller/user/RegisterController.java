@@ -27,7 +27,7 @@ public class RegisterController implements WTFSocketController {
                 body.getCmd() == 64;
     }
 
-    public void work(WTFSocketRoutingItem item, WTFSocketMsg msg, List<WTFSocketMsg> responses) throws WTFSocketException{
+    public boolean work(WTFSocketRoutingItem item, WTFSocketMsg msg, List<WTFSocketMsg> responses) throws WTFSocketException{
 
         final ApplicationMsg body = msg.getBody(ApplicationMsg.class);
 
@@ -39,7 +39,7 @@ public class RegisterController implements WTFSocketController {
         item.setAccept(msg.getVersion());
 
         if (body.hasParams())
-            item.setType(body.firstParam().getString("deviceType"));
+            item.setDeviceType(body.firstParam().getString("deviceType"));
 
         if (StringUtils.startsWith(msg.getFrom(), "Debug_")) {
             ((WTFSocketRoutingTmpItem) item).shiftToDebug();
@@ -51,5 +51,7 @@ public class RegisterController implements WTFSocketController {
         final WTFSocketMsg response = msg.makeResponse();
         response.setBody(ApplicationMsg.success());
         responses.add(response);
+
+        return true;
     }
 }

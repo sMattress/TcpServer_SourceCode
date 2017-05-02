@@ -3,13 +3,9 @@ package controller.user;
 import model.ApplicationMsg;
 import org.springframework.stereotype.Controller;
 import wtf.socket.controller.WTFSocketController;
-
-import wtf.socket.WTFSocket;
 import wtf.socket.exception.WTFSocketException;
 import wtf.socket.protocol.WTFSocketMsg;
-import wtf.socket.routing.item.WTFSocketRoutingFormalItem;
 import wtf.socket.routing.item.WTFSocketRoutingItem;
-import wtf.socket.routing.item.WTFSocketRoutingTmpItem;
 
 import java.util.List;
 
@@ -26,12 +22,14 @@ public class UnRegisterController implements WTFSocketController {
                 body.getCmd() == 65;
     }
 
-    public void work(WTFSocketRoutingItem item, WTFSocketMsg msg, List<WTFSocketMsg> responses) throws WTFSocketException{
+    public boolean work(WTFSocketRoutingItem item, WTFSocketMsg msg, List<WTFSocketMsg> responses) throws WTFSocketException{
         if (item != null)
-            item.logout();
+            item.close();
 
         final WTFSocketMsg response = msg.makeResponse();
         response.setBody(new ApplicationMsg().setFlag(1));
         responses.add(response);
+
+        return true;
     }
 }

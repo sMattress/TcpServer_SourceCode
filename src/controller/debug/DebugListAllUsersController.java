@@ -5,7 +5,6 @@ import model.ApplicationMsg;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import wtf.socket.controller.WTFSocketController;
-import wtf.socket.WTFSocket;
 import wtf.socket.protocol.WTFSocketMsg;
 import wtf.socket.routing.item.WTFSocketRoutingFormalItem;
 import wtf.socket.routing.item.WTFSocketRoutingItem;
@@ -23,7 +22,7 @@ public class DebugListAllUsersController implements WTFSocketController {
                 body.getCmd() == 131;
     }
 
-    public void work(WTFSocketRoutingItem item, WTFSocketMsg msg, List<WTFSocketMsg> responses) {
+    public boolean work(WTFSocketRoutingItem item, WTFSocketMsg msg, List<WTFSocketMsg> responses) {
 
         final WTFSocketMsg response = msg.makeResponse();
         final ApplicationMsg body = msg.getBody(ApplicationMsg.class);
@@ -44,7 +43,7 @@ public class DebugListAllUsersController implements WTFSocketController {
             deviceTypeFilter = param.getString("deviceType");
         }
 
-        for (WTFSocketRoutingItem formalItem : WTFSocket.ROUTING.FORMAL_MAP.values()) {
+        for (WTFSocketRoutingItem formalItem : item.getContext().getRouting().getFormalMap().values()) {
 
             WTFSocketRoutingFormalItem user = (WTFSocketRoutingFormalItem) formalItem;
 
@@ -78,7 +77,7 @@ public class DebugListAllUsersController implements WTFSocketController {
                         boolean typeThough = false;
                         String[] types = deviceTypeFilter.split(",");
                         for (String type : types) {
-                            typeThough = typeThough || StringUtils.equals(type, user.getType());
+                            typeThough = typeThough || StringUtils.equals(type, user.getDeviceType());
                         }
                         isFilter = isFilter && typeThough;
                     }
@@ -91,12 +90,14 @@ public class DebugListAllUsersController implements WTFSocketController {
                     put("state", "online");
                     put("connectType", user.getTerm().getConnectType());
                     put("protocolType", user.getAccept());
-                    put("deviceType", user.getType());
+                    put("deviceType", user.getDeviceType());
                 }});
             }
         }
 
         response.setBody(responseBody);
         responses.add(response);
+
+        return true;
     }
 }

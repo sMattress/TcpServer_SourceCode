@@ -22,7 +22,7 @@ public class ValidationTimeController implements WTFSocketController {
                 body.getCmd() == 66;
     }
 
-    public void work(WTFSocketRoutingItem item, WTFSocketMsg msg, List<WTFSocketMsg> responses) {
+    public boolean work(WTFSocketRoutingItem item, WTFSocketMsg msg, List<WTFSocketMsg> responses) {
 
         final DateFormat df = new SimpleDateFormat("HH-mm-ss");
         final String time[] = df.format(new Date()).split("-");
@@ -39,5 +39,7 @@ public class ValidationTimeController implements WTFSocketController {
                     put("second", second);
         }}));
         responses.add(response);
+
+        return true;
     }
 }
