@@ -4,27 +4,26 @@ import com.alibaba.fastjson.JSONObject;
 import model.ApplicationMsg;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
-import wtf.socket.controller.WTFSocketController;
-import wtf.socket.protocol.WTFSocketMsg;
-import wtf.socket.routing.item.WTFSocketRoutingFormalItem;
-import wtf.socket.routing.item.WTFSocketRoutingItem;
-
-import java.util.List;
+import wtf.socket.controller.WTFSocketSimpleController;
+import wtf.socket.protocol.WTFSocketMessage;
+import wtf.socket.routing.client.WTFSocketClient;
+import wtf.socket.routing.client.WTFSocketFormalClient;
+import wtf.socket.workflow.response.WTFSocketResponse;
 
 @Controller
-public class DebugListAllUsersController implements WTFSocketController {
+public class DebugListAllUsersController implements WTFSocketSimpleController {
 
     @Override
-    public boolean isResponse(WTFSocketMsg msg) {
+    public boolean isResponse(WTFSocketMessage msg) {
         final ApplicationMsg body = msg.getBody(ApplicationMsg.class);
         return StringUtils.startsWith(msg.getFrom(), "Debug_") &&
                 body.getCmd() != null &&
                 body.getCmd() == 131;
     }
 
-    public boolean work(WTFSocketRoutingItem item, WTFSocketMsg msg, List<WTFSocketMsg> responses) {
+    public boolean work(WTFSocketClient item, WTFSocketMessage msg, WTFSocketResponse response) {
 
-        final WTFSocketMsg response = msg.makeResponse();
+        final WTFSocketMessage message = msg.makeResponse();
         final ApplicationMsg body = msg.getBody(ApplicationMsg.class);
         final ApplicationMsg responseBody = new ApplicationMsg().setFlag(1);
 
@@ -43,9 +42,7 @@ public class DebugListAllUsersController implements WTFSocketController {
             deviceTypeFilter = param.getString("deviceType");
         }
 
-        for (WTFSocketRoutingItem formalItem : item.getContext().getRouting().getFormalMap().values()) {
-
-            WTFSocketRoutingFormalItem user = (WTFSocketRoutingFormalItem) formalItem;
+        for (WTFSocketFormalClient formalClient : item.getContext().getRouting().getFormalMap().values()) {
 
             boolean isFilter = true;
 
@@ -54,7 +51,7 @@ public class DebugListAllUsersController implements WTFSocketController {
                     boolean typeThough = false;
                     String[] types = connectTypeFilter.split(",");
                     for (String type : types) {
-                        typeThough = typeThough || StringUtils.equals(type, formalItem.getTerm().getConnectType().toString());
+                        typeThough = typeThough || StringUtils.equals(type, formalClient.getTerm().getConnectType().toString());
                     }
                     isFilter = typeThough;
                 }
@@ -65,7 +62,7 @@ public class DebugListAllUsersController implements WTFSocketController {
                     boolean typeThough = false;
                     String[] types = protocolTypeFilter.split(",");
                     for (String type : types) {
-                        typeThough = typeThough || StringUtils.equals(type, user.getAccept());
+                        typeThough = typeThough || StringUtils.equals(type, formalClient.getAccept());
                     }
                     isFilter = isFilter && typeThough;
                 }
@@ -77,7 +74,7 @@ public class DebugListAllUsersController implements WTFSocketController {
                         boolean typeThough = false;
                         String[] types = deviceTypeFilter.split(",");
                         for (String type : types) {
-                            typeThough = typeThough || StringUtils.equals(type, user.getDeviceType());
+                            typeThough = typeThough || StringUtils.equals(type, formalClient.getDeviceType());
                         }
                         isFilter = isFilter && typeThough;
                     }
@@ -86,17 +83,17 @@ public class DebugListAllUsersController implements WTFSocketController {
 
             if (isFilter) {
                 responseBody.addParam(new JSONObject() {{
-                    put("name", user.getAddress());
+                    put("name", formalClient.getAddress());
                     put("state", "online");
-                    put("connectType", user.getTerm().getConnectType());
-                    put("protocolType", user.getAccept());
-                    put("deviceType", user.getDeviceType());
+                    put("connectType", formalClient.getTerm().getConnectType());
+                    put("protocolType", formalClient.getAccept());
+                    put("deviceType", formalClient.getDeviceType());
                 }});
             }
         }
 
-        response.setBody(responseBody);
-        responses.add(response);
+        message.setBody(responseBody);
+        response.addMessage(message);
 
         return true;
     }

@@ -12,13 +12,13 @@ public class SMattressMsgServer {
 
     public static void main(String[] args) {
 
-        WTFSocketServer server = new WTFSocketServer();
+        WTFSocketServer server = WTFSocketServer.newNettyServer();
 
         server.getProtocolFamily().registerParser(new UserDefinedRegisterProtocolParser());
 
-        server.getEventsGroup().addEventListener((item, msg) -> WebServer.INSTANCE.hardwareOffline(item.getAddress()), WTFSocketEventsType.Disconnect);
+        server.getEventGroup().addEventListener((item, msg) -> WebServer.INSTANCE.hardwareOffline(item.getAddress()), WTFSocketEventsType.Disconnect);
 
-        server.getSecureDelegatesGroup().addDelegate((msg) -> WebServer.INSTANCE.hasSendPermission(msg.getFrom(), msg.getTo()), WTFSocketSecureDelegateType.SEND_PERMISSION);
+        server.getSecureDelegateGroup().addDelegate((msg) -> WebServer.INSTANCE.hasSendPermission(msg.getFrom(), msg.getTo()), WTFSocketSecureDelegateType.SEND_PERMISSION);
 
         server.run(new WTFSocketConfig()
                 .setTcpPort(1234)

@@ -4,35 +4,35 @@ import com.alibaba.fastjson.JSONObject;
 import model.ApplicationMsg;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
-import wtf.socket.controller.WTFSocketController;
-import wtf.socket.protocol.WTFSocketMsg;
-import wtf.socket.routing.item.WTFSocketRoutingFormalItem;
-import wtf.socket.routing.item.WTFSocketRoutingItem;
-
-import java.util.List;
+import wtf.socket.controller.WTFSocketSimpleController;
+import wtf.socket.protocol.WTFSocketMessage;
+import wtf.socket.routing.client.WTFSocketClient;
+import wtf.socket.routing.client.WTFSocketFormalClient;
+import wtf.socket.workflow.response.WTFSocketResponse;
 
 @Controller
-public class DebugCheckUserController implements WTFSocketController {
+public class DebugCheckUserController implements WTFSocketSimpleController {
 
     @Override
-    public boolean isResponse(WTFSocketMsg msg) {
+    public boolean isResponse(WTFSocketMessage msg) {
         final ApplicationMsg body = msg.getBody(ApplicationMsg.class);
         return StringUtils.startsWith(msg.getFrom(), "Debug_") &&
                 body.getCmd() != null &&
                 body.getCmd() == 130;
     }
 
-    public boolean work(WTFSocketRoutingItem item, WTFSocketMsg msg, List<WTFSocketMsg> responses) {
+    @Override
+    public boolean work(WTFSocketClient source, WTFSocketMessage msg, WTFSocketResponse response) {
 
         final ApplicationMsg body = msg.getBody(ApplicationMsg.class);
-        final WTFSocketMsg response = msg.makeResponse();
+        final WTFSocketMessage message = msg.makeResponse();
 
         for (int i = 0; i < body.getParams().size(); i++) {
             String name = body.getParams().getString(i);
             JSONObject param = new JSONObject();
             param.put("name", name);
-            if (item.getContext().getRouting().getFormalMap().contains(name)) {
-                final WTFSocketRoutingFormalItem user = item.getContext().getRouting().getFormalMap().getItem(name);
+            if (source.getContext().getRouting().getFormalMap().contains(name)) {
+                final WTFSocketFormalClient user = source.getContext().getRouting().getFormalMap().getItem(name);
 
                 param.put("state",  "online");
                 param.put("connect", user.getTerm().getConnectType());
@@ -45,8 +45,8 @@ public class DebugCheckUserController implements WTFSocketController {
             body.addParam(param);
         }
 
-        response.setBody(body);
-        responses.add(response);
+        message.setBody(body);
+        response.addMessage(message);
 
         return true;
     }
